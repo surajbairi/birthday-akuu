@@ -7,160 +7,150 @@
   <style>
     body {
       margin: 0;
+      padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #1a1a2e;
+      background: linear-gradient(to top right, #fdeff9, #ec38bc, #7303c0);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
       color: #fff;
-      overflow-x: hidden;
-      text-align: center;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .container {
-      padding: 50px 20px;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
     }
 
-    .title {
-      font-size: 2.5em;
+    h1 {
+      font-size: 2.8em;
+      color: #fff;
       margin-bottom: 20px;
-      color: #ff5e78;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    #message {
+      font-size: 1.5em;
+      max-width: 700px;
+      margin-bottom: 30px;
+      opacity: 0;
+      transition: opacity 1s;
     }
 
     #nextBtn {
-      background-color: #ff5e78;
-      border: none;
-      padding: 15px 30px;
-      color: #fff;
+      background: #ff4e8b;
+      color: white;
+      padding: 12px 25px;
       font-size: 1.2em;
-      border-radius: 10px;
+      border: none;
+      border-radius: 20px;
       cursor: pointer;
-      margin-top: 20px;
+      transition: background 0.3s ease;
     }
 
-    #messages {
-      margin-top: 40px;
-      font-size: 1.3em;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.8;
+    #nextBtn:hover {
+      background: #ff82ad;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    canvas#balloons {
+    .hearts {
       position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-
-    .lights {
-      background: url('https://i.postimg.cc/cLmmKrzY/lights.png') repeat-x;
-      height: 120px;
-      position: absolute;
-      top: 0;
       width: 100%;
-      animation: blink 2s linear infinite;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+    .hearts span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: pink;
+      animation: animate 10s linear infinite;
+      bottom: -150px;
+      opacity: 0.7;
+      clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 80%, 20% 100%, 0% 35%);
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        transform: translateY(-1000px) scale(0.5);
+      }
     }
   </style>
 </head>
 <body>
-  <canvas id="balloons"></canvas>
-  <div class="lights"></div>
-  
+  <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-love.mp3" loop></audio>
+
+  <div class="hearts">
+    <!-- Floating hearts -->
+    <span style="left:10%; animation-delay: 1s;"></span>
+    <span style="left:20%; animation-delay: 3s;"></span>
+    <span style="left:30%; animation-delay: 5s;"></span>
+    <span style="left:40%; animation-delay: 2s;"></span>
+    <span style="left:50%; animation-delay: 4s;"></span>
+    <span style="left:60%; animation-delay: 1s;"></span>
+    <span style="left:70%; animation-delay: 3s;"></span>
+    <span style="left:80%; animation-delay: 2s;"></span>
+    <span style="left:90%; animation-delay: 4s;"></span>
+  </div>
+
   <div class="container">
-    <h1 class="title">🎉 Happy Birthday Aku 🎉</h1>
-    <div id="messages"></div>
-    <button onclick="nextStep()" id="nextBtn">Start Surprise</button>
+    <h1>Happy Birthday Aku 🎂❤️</h1>
+    <div id="message">Click start to begin your surprise!</div>
+    <button id="nextBtn" onclick="nextStep()">Start</button>
   </div>
 
   <script>
-    const steps = [
+    const messages = [
       "Hi Aku ❤️",
-      "Aaj tumhara special day hai... Happy Birthday! 🎂",
+      "Aaj tumhara special day hai... Happy Birthday! 🎉",
       "Main chahta hoon tumhe ek ek surprise dikhau...",
-      "Tum sirf meri zindagi nahi ho, meri muskurahat bhi ho. 😊",
-      "Tere bina sab kuch adhoora sa lagta hai... 🥺",
-      "Har pal tumhara khayal aata hai... 💭",
-      "Jab tum hansti ho, lagta hai duniya ruk jaye... 😍",
-      "Tum jaisi ho, waise hi perfect ho...",
-      "Chahe duniya kuch bhi kahe, mere liye tum sabse khaas ho... ❤️",
-      "Tumhari aankhon mein ek alag hi jadoo hai... ✨",
-      "Aur ek baat... Main har birthday pe tumhare sath hona chahta hoon 🎁",
-      "Agar kabhi main kuch galat bol jaun ya kar jaun, toh maaf kar dena...",
-      "Main tumhare liye duniya nahi badal sakta, par...",
-      "Yeh chhoti si digital duniya tumhare liye banayi hai, sirf dil se... 🥹",
-      "Happy Birthday once again, Aku 💝 — Tum meri sabse pyari insan ho 💫"
+      "Tum meri zindagi ki sabse khoobsurat wajah ho... 💖",
+      "Jab tum hansti ho, duniya aur bhi pyaari lagti hai 😍",
+      "Tere bina sab kuch adhoora lagta hai... 🥺",
+      "Har pal tumhara khayal rehta hai... 🌙",
+      "Chahta hoon har janam mein tumse hi pyaar ho... ✨",
+      "Aaj tumhare liye ek choti si digital duniya banayi hai...",
+      "Main tumhare liye kuch bada nahi kar saka, par yeh dil se banaya hai... ❤️",
+      "Love you forever Aku 🌹"
     ];
 
-    let index = 0;
-    const messageBox = document.getElementById("messages");
+    let index = -1;
+    const messageBox = document.getElementById("message");
+    const music = document.getElementById("bgMusic");
 
     function nextStep() {
-      if (index < steps.length) {
-        const p = document.createElement("p");
-        p.innerText = steps[index];
-        messageBox.appendChild(p);
-        index++;
+      if (index === -1) {
+        music.play();
+      }
+      index++;
+      if (index < messages.length) {
+        messageBox.style.opacity = 0;
+        setTimeout(() => {
+          messageBox.innerHTML = messages[index];
+          messageBox.style.opacity = 1;
+        }, 500);
       } else {
         document.getElementById("nextBtn").style.display = "none";
-        const end = document.createElement("p");
-        end.innerHTML = "<br>🎈 <strong>Main tumhare liye kuch bada nahi kar saka, par yeh chhoti si cheez sirf tumhare liye banayi hai.</strong> 🎈<br><br>🌹 Love you always, Aku 🌹";
-        messageBox.appendChild(end);
+        messageBox.innerHTML += "<br><br><strong>🎈 Happy Birthday once again, Aku! 🎈</strong>";
       }
     }
-
-    // Balloon Animation
-    const canvas = document.getElementById('balloons');
-    const ctx = canvas.getContext('2d');
-    let W = window.innerWidth;
-    let H = window.innerHeight;
-    canvas.width = W;
-    canvas.height = H;
-
-    const balloonCount = 30;
-    const balloons = [];
-
-    for (let i = 0; i < balloonCount; i++) {
-      balloons.push({
-        x: Math.random() * W,
-        y: H + Math.random() * H,
-        r: 20 + Math.random() * 30,
-        d: Math.random() * 0.5 + 0.5,
-        color: `hsl(${Math.random() * 360}, 70%, 60%)`
-      });
-    }
-
-    function drawBalloons() {
-      ctx.clearRect(0, 0, W, H);
-      for (let i = 0; i < balloonCount; i++) {
-        const b = balloons[i];
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2, false);
-        ctx.fillStyle = b.color;
-        ctx.fill();
-        b.y -= b.d;
-        if (b.y + b.r < 0) {
-          b.y = H + b.r;
-          b.x = Math.random() * W;
-        }
-      }
-    }
-
-    setInterval(drawBalloons, 30);
-
-    window.addEventListener('resize', () => {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = W;
-      canvas.height = H;
-    });
   </script>
 </body>
 </html>
