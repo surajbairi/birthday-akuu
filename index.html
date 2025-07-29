@@ -5,151 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happy Birthday Aku ❤️</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
+      background: url('https://images.unsplash.com/photo-1519160558534-579f51049a3b?auto=format&fit=crop&w=1740&q=80') no-repeat center center fixed;
+      background-size: cover;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to top right, #fdeff9, #ec38bc, #7303c0);
-      background-size: 400% 400%;
-      animation: gradientBG 20s ease infinite;
-      color: #fff;
+      height: 100vh;
       overflow: hidden;
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 2.8em;
       color: #fff;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
-
-    #message {
-      font-size: 1.5em;
-      max-width: 700px;
-      margin-bottom: 30px;
-      opacity: 0;
-      transition: opacity 1s;
+    .screen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 30px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
     }
-
+    .screen.active {
+      display: flex;
+      animation: fade 1s;
+    }
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    #text {
+      font-size: 1.8em;
+      max-width: 800px;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
     #nextBtn {
-      background: #ff4e8b;
-      color: white;
+      margin-top: 30px;
       padding: 12px 25px;
-      font-size: 1.2em;
+      font-size: 1em;
       border: none;
       border-radius: 20px;
+      background: #ff5e78;
+      color: #fff;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
-
-    #nextBtn:hover {
-      background: #ff82ad;
-    }
-
-    .hearts {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
-    }
-
-    .hearts span {
-      position: absolute;
-      display: block;
-      width: 20px;
-      height: 20px;
-      background: pink;
-      animation: animate 10s linear infinite;
-      bottom: -150px;
-      opacity: 0.7;
-      clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 80%, 20% 100%, 0% 35%);
-    }
-
-    @keyframes animate {
-      0% {
-        transform: translateY(0) scale(1);
-      }
-      100% {
-        transform: translateY(-1000px) scale(0.5);
-      }
+    audio {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-love.mp3" loop></audio>
+  <audio id="music" src="https://www.bensound.com/bensound-music/bensound-love.mp3" autoplay loop></audio>
 
-  <div class="hearts">
-    <!-- Floating hearts -->
-    <span style="left:10%; animation-delay: 1s;"></span>
-    <span style="left:20%; animation-delay: 3s;"></span>
-    <span style="left:30%; animation-delay: 5s;"></span>
-    <span style="left:40%; animation-delay: 2s;"></span>
-    <span style="left:50%; animation-delay: 4s;"></span>
-    <span style="left:60%; animation-delay: 1s;"></span>
-    <span style="left:70%; animation-delay: 3s;"></span>
-    <span style="left:80%; animation-delay: 2s;"></span>
-    <span style="left:90%; animation-delay: 4s;"></span>
-  </div>
-
-  <div class="container">
-    <h1>Happy Birthday Aku 🎂❤️</h1>
-    <div id="message">Click start to begin your surprise!</div>
-    <button id="nextBtn" onclick="nextStep()">Start</button>
+  <div id="app">
+    <div class="screen active" id="screen0">
+      <div>
+        <div id="text">Hi Aku ❤️\nAaj tumhara birthday hai... aur mere paas tumhare liye ek choti si surprise hai 🎁</div>
+        <button id="nextBtn" onclick="nextStep()">Start</button>
+      </div>
+    </div>
   </div>
 
   <script>
     const messages = [
-      "Hi Aku ❤️",
-      "Aaj tumhara special day hai... Happy Birthday! 🎉",
-      "Main chahta hoon tumhe ek ek surprise dikhau...",
-      "Tum meri zindagi ki sabse khoobsurat wajah ho... 💖",
-      "Jab tum hansti ho, duniya aur bhi pyaari lagti hai 😍",
-      "Tere bina sab kuch adhoora lagta hai... 🥺",
-      "Har pal tumhara khayal rehta hai... 🌙",
-      "Chahta hoon har janam mein tumse hi pyaar ho... ✨",
-      "Aaj tumhare liye ek choti si digital duniya banayi hai...",
-      "Main tumhare liye kuch bada nahi kar saka, par yeh dil se banaya hai... ❤️",
-      "Love you forever Aku 🌹"
+      `Tum sirf ek ladki nahi ho Aku,\nTum meri zindagi ka sabse haseen hissa ho... ❤️`,
+      `Main chahta hoon duniya tumhari muskurahat se roshan ho jaaye... 🌟\nKyuki jab tum hansti ho, sab kuch theek lagta hai.`,
+      `Mujhe yaad hai jab hum pehli baar mile the,\nBas tumhari aankhon mein hi kho gaya tha... 💫`,
+      `Tumhara gussa, tumhari baatein,\nSab kuch itna apna sa lagta hai, jaise main tumhara aur tum meri ho. 💕`,
+      `Main jaanta hoon main har baar perfect nahi hota,\nLekin mera pyaar har baar tumse perfect hota hai. 🥹`,
+      `Har subah tumhara naam mere dil mein hota hai,\nAur har raat tumhara khayal meri neend. 💤`,
+      `Agar zindagi ke saare pal kisi ek ke saath bitane ho,\nToh sirf tum ho jise main chunta... har baar, har janam. 🔁`,
+      `Shayad main tumhare liye kuch bada nahi kar saka,\nPar yeh choti si digital duniya sirf tumhare liye banayi hai. 🎂`,
+      `Tumhare bina main adhoora hoon,\nAur tumhare saath... main sab kuch hoon. 💘`,
+      `Happy Birthday, Aku 🎉\nTum meri duniya ho. Tum mere har sapne ka armaan ho. Tum mera pyaar ho. ❤️`
     ];
 
-    let index = -1;
-    const messageBox = document.getElementById("message");
-    const music = document.getElementById("bgMusic");
+    let current = 0;
 
     function nextStep() {
-      if (index === -1) {
-        music.play();
-      }
-      index++;
-      if (index < messages.length) {
-        messageBox.style.opacity = 0;
-        setTimeout(() => {
-          messageBox.innerHTML = messages[index];
-          messageBox.style.opacity = 1;
-        }, 500);
+      const currentScreen = document.getElementById(`screen${current}`);
+      current++;
+      if (current < messages.length) {
+        const newScreen = document.createElement("div");
+        newScreen.className = "screen active";
+        newScreen.id = `screen${current}`;
+        newScreen.innerHTML = `
+          <div>
+            <div id="text">${messages[current]}</div>
+            <button id="nextBtn" onclick="nextStep()">Next</button>
+          </div>`;
+        currentScreen.classList.remove("active");
+        document.getElementById("app").appendChild(newScreen);
       } else {
-        document.getElementById("nextBtn").style.display = "none";
-        messageBox.innerHTML += "<br><br><strong>🎈 Happy Birthday once again, Aku! 🎈</strong>";
+        currentScreen.classList.remove("active");
+        const end = document.createElement("div");
+        end.className = "screen active";
+        end.innerHTML = `<div><div id="text">🎈 Happy Birthday once again Aku! 🎈\nMain tumse hamesha pyaar karta rahunga. 💖</div></div>`;
+        document.getElementById("app").appendChild(end);
       }
+
+      // Start music on first click
+      const music = document.getElementById('music');
+      if (music.paused) music.play();
     }
   </script>
 </body>
