@@ -1,0 +1,287 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Akuu!</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-in;
+            position: relative;
+            z-index: 10;
+        }
+        h1 {
+            font-size: 3em;
+            color: #d81b60;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin: 0 0 20px;
+            opacity: 0;
+            animation: slideIn 1s ease-in forwards;
+        }
+        .gallery {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            perspective: 1000px;
+        }
+        .gallery img {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.5s;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #d81b60, #f06292);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background: radial-gradient(circle, #f06292, #d81b60);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: float 5s infinite ease-in-out;
+            z-index: 5;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: #666;
+        }
+        .hidden {
+            display: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; }
+            p { font-size: 1em; }
+            .gallery { width: 200px; height: 200px; }
+            .gallery img { width: 150px; height: 150px; }
+            button { font-size: 1em; padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" loop>
+        <source src="https://www.fesliyanstudios.com/play-mp3/3157" type="audio/mpeg">
+    </audio>
+    <div class="container" id="container">
+        <div id="step-0" class="step">
+            <h1>Happy Birthday, Akuu!</h1>
+            <p>Hey meri jaan, Akansha! Aaj tumhara special din hai, aur maine tumhare liye kuch dil se banaya hai. Click karo aur dekho! 😊</p>
+            <button onclick="startJourney()">Shuru Karo!</button>
+        </div>
+        <div id="step-1" class="step hidden">
+            <p>Akansha, tum hamesha khush raho, yeh meri dil se dua hai. Yeh dekho, humari ek khoobsurat yaad!</p>
+            <div class="gallery" id="gallery"></div>
+            <button onclick="nextStep()">Aage Chalo</button>
+        </div>
+        <div id="step-2" class="step hidden">
+            <p>Tumhari har muskaan meri duniya roshan karti hai. Yeh yaad bhi utni hi pyaari hai!</p>
+            <div class="gallery" id="gallery2"></div>
+            <button onclick="nextStep()">Aur Dekho</button>
+        </div>
+        <div id="step-3" class="step hidden">
+            <p>Akuu, tum meri zindagi ka sabse bada tohfa ho. Ek aur pal yaad karo!</p>
+            <div class="gallery" id="gallery3"></div>
+            <button onclick="nextStep()">Aage Badho</button>
+        </div>
+        <div id="step-4" class="step hidden">
+            <h1>Happy Birthday, Meri Akuu!</h1>
+            <p>Mene shayad tumhare liye utna nahi kiya jitna tum deserve karti ho, par yeh chhota sa dil se banaya gaya gift hai. Tum meri hamesha pehli aur akhiri pyar ho. Please mujhe kabhi chhod ke mat jana, aur hamesha khush rehna. I love you forever! ❤️</p>
+            <button onclick="showFinal()">Final Surprise!</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 4;
+        const photos = [
+            'https://via.placeholder.com/400x300.png?text=Akuu+Moment+1',
+            'https://via.placeholder.com/400x300.png?text=Akuu+Moment+2',
+            'https://via.placeholder.com/400x300.png?text=Akuu+Moment+3'
+        ];
+        let musicStarted = false;
+
+        function setupGallery(galleryId, photoIndex) {
+            const gallery = document.getElementById(galleryId);
+            const img = document.createElement('img');
+            img.src = photos[photoIndex];
+            img.alt = 'Akuu Memory';
+            img.style.transform = 'rotateY(0deg) translateZ(150px)';
+            gallery.appendChild(img);
+            let angle = 0;
+            setInterval(() => {
+                angle = (angle + 1) % 360;
+                img.style.transform = `rotateY(${angle}deg) translateZ(150px)`;
+            }, 50);
+        }
+
+        function startJourney() {
+            // Start music on first user interaction
+            if (!musicStarted) {
+                const music = document.getElementById('bgMusic');
+                music.volume = 0.3;
+                music.play().catch(e => console.log('Music play failed:', e));
+                musicStarted = true;
+            }
+            nextStep();
+        }
+
+        function nextStep() {
+            document.getElementById(`step-${currentStep}`).classList.add('hidden');
+            currentStep++;
+            if (currentStep <= totalSteps) {
+                document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+                if (currentStep === 1) setupGallery('gallery', 0);
+                if (currentStep === 2) setupGallery('gallery2', 1);
+                if (currentStep === 3) setupGallery('gallery3', 2);
+            }
+        }
+
+        function showFinal() {
+            const container = document.getElementById('container');
+            container.innerHTML = `
+                <h1 style="font-size: 3.5em; color: #d81b60;">I Love You, Akuu!</h1>
+                <p style="font-size: 1.5em;">Happy Birthday, meri jaan! Tum hamesha meri wajah se muskurao, aur hum sath mein hazaar saal jiyo! 🎉</p>
+                <div style="font-size: 3em; margin: 20px;">🎂❤️🎈</div>
+            `;
+            createConfetti();
+            createBalloons();
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `${Math.random() * 100}vh`;
+                confetti.style.opacity = '0.8';
+                confetti.style.animation = `fall ${Math.random() * 2 + 1}s linear`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000);
+            }
+        }
+
+        function createBalloons() {
+            for (let i = 0; i < 10; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = `${Math.random() * 90 + 5}%`;
+                balloon.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(balloon);
+                setTimeout(() => balloon.remove(), 10000);
+            }
+        }
+
+        // CSS for confetti
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fall {
+                0% { transform: translateY(-100vh) rotate(0deg); }
+                100% { transform: translateY(100vh) rotate(720deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize first step
+        window.onload = () => {
+            document.getElementById('step-0').classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>
