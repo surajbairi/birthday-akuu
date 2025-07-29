@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -153,7 +114,9 @@
     </style>
 </head>
 <body>
-    
+    <audio id="bgMusic" loop>
+        <source src="https://yourusername.github.io/birthday-akuu/audio/birthday-song.mp3" type="audio/mpeg">
+    </audio>
     <div class="container" id="container">
         <div id="step-0" class="step">
             <h1>Happy Birthday, Akuu!</h1>
@@ -186,9 +149,9 @@
         let currentStep = 0;
         const totalSteps = 4;
         const photos = [
-            'https://via.placeholder.com/400x300.png?text=Akuu+Moment+1',
-            'https://via.placeholder.com/400x300.png?text=Akuu+Moment+2',
-            'https://via.placeholder.com/400x300.png?text=Akuu+Moment+3'
+            'https://yourusername.github.io/birthday-akuu/images/photo1.jpg',
+            'https://yourusername.github.io/birthday-akuu/images/photo2.jpg',
+            'https://yourusername.github.io/birthday-akuu/images/photo3.jpg'
         ];
         let musicStarted = false;
 
@@ -207,7 +170,6 @@
         }
 
         function startJourney() {
-            // Start music on first user interaction
             if (!musicStarted) {
                 const music = document.getElementById('bgMusic');
                 music.volume = 0.3;
@@ -266,7 +228,6 @@
             }
         }
 
-        // CSS for confetti
         const style = document.createElement('style');
         style.innerHTML = `
             @keyframes fall {
@@ -276,7 +237,6 @@
         `;
         document.head.appendChild(style);
 
-        // Initialize first step
         window.onload = () => {
             document.getElementById('step-0').classList.remove('hidden');
         };
