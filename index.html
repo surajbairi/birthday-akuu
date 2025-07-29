@@ -1,92 +1,166 @@
-<script>
-    let currentStep = 0;
-    const totalSteps = 4;
-    const photos = [
-        'https://via.placeholder.com/400x300.png?text=Akuu+Moment+1',
-        'https://via.placeholder.com/400x300.png?text=Akuu+Moment+2',
-        'https://via.placeholder.com/400x300.png?text=Akuu+Moment+3'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Aku ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a2e;
+      color: #fff;
+      overflow-x: hidden;
+      text-align: center;
+    }
+
+    .container {
+      padding: 50px 20px;
+    }
+
+    .title {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #ff5e78;
+    }
+
+    #nextBtn {
+      background-color: #ff5e78;
+      border: none;
+      padding: 15px 30px;
+      color: #fff;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #messages {
+      margin-top: 40px;
+      font-size: 1.3em;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    canvas#balloons {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .lights {
+      background: url('https://i.postimg.cc/cLmmKrzY/lights.png') repeat-x;
+      height: 120px;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      animation: blink 2s linear infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="balloons"></canvas>
+  <div class="lights"></div>
+  
+  <div class="container">
+    <h1 class="title">🎉 Happy Birthday Aku 🎉</h1>
+    <div id="messages"></div>
+    <button onclick="nextStep()" id="nextBtn">Start Surprise</button>
+  </div>
+
+  <script>
+    const steps = [
+      "Hi Aku ❤️",
+      "Aaj tumhara special day hai... Happy Birthday! 🎂",
+      "Main chahta hoon tumhe ek ek surprise dikhau...",
+      "Tum sirf meri zindagi nahi ho, meri muskurahat bhi ho. 😊",
+      "Tere bina sab kuch adhoora sa lagta hai... 🥺",
+      "Har pal tumhara khayal aata hai... 💭",
+      "Jab tum hansti ho, lagta hai duniya ruk jaye... 😍",
+      "Tum jaisi ho, waise hi perfect ho...",
+      "Chahe duniya kuch bhi kahe, mere liye tum sabse khaas ho... ❤️",
+      "Tumhari aankhon mein ek alag hi jadoo hai... ✨",
+      "Aur ek baat... Main har birthday pe tumhare sath hona chahta hoon 🎁",
+      "Agar kabhi main kuch galat bol jaun ya kar jaun, toh maaf kar dena...",
+      "Main tumhare liye duniya nahi badal sakta, par...",
+      "Yeh chhoti si digital duniya tumhare liye banayi hai, sirf dil se... 🥹",
+      "Happy Birthday once again, Aku 💝 — Tum meri sabse pyari insan ho 💫"
     ];
 
-    function setupGallery(galleryId, photoIndex) {
-        const gallery = document.getElementById(galleryId);
-        const img = document.createElement('img');
-        img.src = photos[photoIndex];
-        img.alt = 'Akuu Memory';
-        img.style.transform = 'rotateY(0deg) translateZ(150px)';
-        gallery.appendChild(img);
-        let angle = 0;
-        setInterval(() => {
-            angle = (angle + 1) % 360;
-            img.style.transform = `rotateY(${angle}deg) translateZ(150px)`;
-        }, 50);
-    }
+    let index = 0;
+    const messageBox = document.getElementById("messages");
 
     function nextStep() {
-        document.getElementById(`step-${currentStep}`).classList.add('hidden');
-        currentStep++;
-        if (currentStep <= totalSteps) {
-            document.getElementById(`step-${currentStep}`).classList.remove('hidden');
-            if (currentStep === 1) setupGallery('gallery', 0);
-            if (currentStep === 2) setupGallery('gallery2', 1);
-            if (currentStep === 3) setupGallery('gallery3', 2);
-        }
+      if (index < steps.length) {
+        const p = document.createElement("p");
+        p.innerText = steps[index];
+        messageBox.appendChild(p);
+        index++;
+      } else {
+        document.getElementById("nextBtn").style.display = "none";
+        const end = document.createElement("p");
+        end.innerHTML = "<br>🎈 <strong>Main tumhare liye kuch bada nahi kar saka, par yeh chhoti si cheez sirf tumhare liye banayi hai.</strong> 🎈<br><br>🌹 Love you always, Aku 🌹";
+        messageBox.appendChild(end);
+      }
     }
 
-    function showFinal() {
-        const container = document.getElementById('container');
-        container.innerHTML = `
-            <h1 style="font-size: 3.5em; color: #d81b60;">I Love You, Akuu!</h1>
-            <p style="font-size: 1.5em;">Happy Birthday, meri jaan! Tum hamesha meri wajah se muskurao, aur hum sath mein hazaar saal jiyo! 🎉</p>
-            <div style="font-size: 3em; margin: 20px;">🎂❤️🎈</div>
-        `;
-        createConfetti();
-        createBalloons();
+    // Balloon Animation
+    const canvas = document.getElementById('balloons');
+    const ctx = canvas.getContext('2d');
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+
+    const balloonCount = 30;
+    const balloons = [];
+
+    for (let i = 0; i < balloonCount; i++) {
+      balloons.push({
+        x: Math.random() * W,
+        y: H + Math.random() * H,
+        r: 20 + Math.random() * 30,
+        d: Math.random() * 0.5 + 0.5,
+        color: `hsl(${Math.random() * 360}, 70%, 60%)`
+      });
     }
 
-    function createConfetti() {
-        for (let i = 0; i < 150; i++) {
-            const confetti = document.createElement('div');
-            confetti.style.position = 'absolute';
-            confetti.style.width = '10px';
-            confetti.style.height = '10px';
-            confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-            confetti.style.left = `${Math.random() * 100}vw`;
-            confetti.style.top = `${Math.random() * 100}vh`;
-            confetti.style.opacity = '0.8';
-            confetti.style.animation = `fall ${Math.random() * 2 + 1}s linear`;
-            document.body.appendChild(confetti);
-            setTimeout(() => confetti.remove(), 4000);
+    function drawBalloons() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < balloonCount; i++) {
+        const b = balloons[i];
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2, false);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+        b.y -= b.d;
+        if (b.y + b.r < 0) {
+          b.y = H + b.r;
+          b.x = Math.random() * W;
         }
+      }
     }
 
-    function createBalloons() {
-        for (let i = 0; i < 10; i++) {
-            const balloon = document.createElement('div');
-            balloon.className = 'balloon';
-            balloon.style.left = `${Math.random() * 90 + 5}%`;
-            balloon.style.animationDelay = `${Math.random() * 2}s`;
-            document.body.appendChild(balloon);
-            setTimeout(() => balloon.remove(), 10000);
-        }
-    }
+    setInterval(drawBalloons, 30);
 
-    // CSS for confetti and balloons
-    const style = document.createElement('style');
-    style.innerHTML = `
-        @keyframes fall {
-            0% { transform: translateY(-100vh) rotate(0deg); }
-            100% { transform: translateY(100vh) rotate(720deg); }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Play background music
-    const music = document.getElementById('bgMusic');
-    music.volume = 0.3;
-    music.play();
-
-    // Initialize first gallery
-    window.onload = () => {
-        document.getElementById('step-0').classList.remove('hidden');
-    };
-</script>
+    window.addEventListener('resize', () => {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+    });
+  </script>
+</body>
+</html>
